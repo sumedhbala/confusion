@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Card,
-  CardBody,
-  CardImg,
-  CardImgOverlay,
-  CardText,
-  CardTitle,
-} from "reactstrap";
+import { Card, CardBody, CardImg, CardText, CardTitle } from "reactstrap";
 
 class DishDetail extends Component {
   renderDish(dish) {
@@ -32,7 +25,12 @@ class DishDetail extends Component {
           <p className="row mb-0">{comment.comment}</p>
           <div className="row">
             <p>
-              -- {comment.author}, {comment.date}
+              -- {comment.author},{" "}
+              {new Intl.DateTimeFormat("en-us", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }).format(new Date(Date.parse(comment.date)))}
             </p>
           </div>
         </div>
@@ -48,9 +46,11 @@ class DishDetail extends Component {
   render() {
     if (this.props.dish != null) {
       return (
-        <div className="row">
-          {this.renderDish(this.props.dish)}
-          {this.renderComments(this.props.dish.comments)}
+        <div className="container">
+          <div className="row">
+            {this.renderDish(this.props.dish)}
+            {this.renderComments(this.props.dish.comments)}
+          </div>
         </div>
       );
     } else {
