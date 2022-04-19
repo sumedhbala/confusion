@@ -1,20 +1,22 @@
-import { Component } from "react";
+import React, { Component } from "react";
+
+import Home from "./HomeComponent";
 import Menu from "./MenuComponent";
-import DishDetail from "./DishdetailComponent";
+import About from "./AboutComponent";
+import Contact from "./ContactComponent";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
-import Home from "./HomeCompoent";
-import Contact from "./ContactComponent";
-import About from "./AboutComponent";
+import DishDetail from "./DishdetailComponent";
+
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
 const mapStateToProps = (state) => {
   return {
+    comments: state.comments,
     dishes: state.dishes,
-    comment: state.comments,
-    promotions: state.promotions,
     leaders: state.leaders,
+    promotions: state.promotions,
   };
 };
 
@@ -24,11 +26,18 @@ class Main extends Component {
       return (
         <Home
           dish={this.props.dishes.filter((dish) => dish.featured)[0]}
-          promotion={this.props.promotions.filter((promo) => promo.featured)[0]}
+          promotion={
+            this.props.promotions.filter((promotion) => promotion.featured)[0]
+          }
           leader={this.props.leaders.filter((leader) => leader.featured)[0]}
         />
       );
     };
+
+    const AboutUsPage = () => {
+      return <About leaders={this.props.leaders} />;
+    };
+
     const DishWithId = ({ match }) => {
       return (
         <DishDetail
@@ -43,9 +52,11 @@ class Main extends Component {
         />
       );
     };
+
     return (
       <div>
-        <Header />
+        <Header></Header>
+
         <Switch>
           <Route path="/home" component={HomePage} />
           <Route
@@ -53,19 +64,26 @@ class Main extends Component {
             path="/menu"
             component={() => <Menu dishes={this.props.dishes} />}
           />
+
+          <Route path="/menu/:dishId" component={DishWithId} />
+
           <Route exact path="/contactus" component={Contact} />
-          <Route path="/menu/:dishId" component={DishWithId}></Route>
-          <Route
-            exact
-            path="/aboutus"
-            component={() => <About leaders={this.props.leaders} />}
-          />
+          <Route exact path="/aboutus" component={AboutUsPage} />
+
+          {/* if url dosesnt match, bydefault redirect to */}
           <Redirect to="/home" />
         </Switch>
-        <Footer />
+
+        <Footer></Footer>
       </div>
     );
   }
 }
 
 export default withRouter(connect(mapStateToProps)(Main));
+
+/**
+ *
+ * - connect(): generates a wrapper container component that
+ *      subscribe to the store.
+ */
